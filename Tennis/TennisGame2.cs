@@ -20,7 +20,9 @@ namespace Tennis
         public string GetScore()
         {
             var score = "";
-            if (p1point == p2point && p1point < 3)
+            bool isEqualScore = isEqualScoreline();
+
+            if (isEqualScore && p1point < 3)
             {
                 if (p1point == 0)
                     score = "Love";
@@ -30,7 +32,7 @@ namespace Tennis
                     score = "Thirty";
                 score += "-All";
             }
-            if (p1point == p2point && p1point > 2)
+            if (isEqualScore && p1point > 2)
                 score = "Deuce";
 
             if (p1point > 0 && p2point == 0)
@@ -102,6 +104,16 @@ namespace Tennis
                 score = "Win for player2";
             }
             return score;
+        }
+
+        public bool isEqualScoreline()
+        {
+            return p1point == p2point;
+        }
+
+        public bool isDeuce()
+        {
+            return isEqualScoreline() && p1point > 2;
         }
 
         public void SetP1Score(int number)
