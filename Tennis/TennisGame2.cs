@@ -21,19 +21,29 @@ namespace Tennis
         {
             var score = "";
             bool isEqualScore = isEqualScoreline();
+            bool isDeuceScore = isDeuce();
 
-            if (isEqualScore && p1point < 3)
+            if (isDeuceScore) return "Deuce";
+
+            if (isEqualScore && !isDeuceScore)
             {
-                if (p1point == 0)
-                    score = "Love";
-                if (p1point == 1)
-                    score = "Fifteen";
-                if (p1point == 2)
-                    score = "Thirty";
-                score += "-All";
-            }
-            if (isEqualScore && p1point > 2)
-                score = "Deuce";
+                switch(p1point)
+                {
+                    case 0:
+                        score = "Love-All";
+                        break;
+                    case 1:
+                        score = "Fifteen-All";
+                        break;
+                    case 2:
+                        score = "Thirty-All";
+                        break;
+                    default:
+                        score = "Deuce";
+                        break;
+                }
+                return score;
+            }            
 
             if (p1point > 0 && p2point == 0)
             {
@@ -108,7 +118,7 @@ namespace Tennis
 
         public bool isEqualScoreline()
         {
-            return p1point == p2point;
+            return p1Score == p2Score;
         }
 
         public bool isDeuce()
