@@ -19,26 +19,16 @@ namespace Tennis
 
         public string GetScore()
         {
-            var score = string.Empty;
-            bool isEqualScore = IsEqualScoreline();
-            bool isDeuceScore = IsDeuce();
-            bool hasWinningAdvantage = playerHasWinningAdvantage();
-
-            if (isDeuceScore) return "Deuce";
-
-            if (isEqualScore && !isDeuceScore)
-            {
-                score = showDrawnScore();
-                return score;
-            }
-
-            if(hasWinningAdvantage) {
-                score = GetPlayerGameAdvantage();
-                return score;
-            }
-
-            p1res = LookUpScoreMap(p1point);
-            p2res = LookUpScoreMap(p2point);
+            string score = string.Empty;
+            
+            score = IsDeuce() == true ? "Deuce" : "";
+            
+            score = IsEqualScoreline() == true && !IsDeuce() ? GetDrawnScore() : ""; 
+            
+            score = PlayerHasWinningAdvantage() ? GetPlayerGameAdvantage() : "";
+            
+            p1res = GetPlayerScore(p1point);
+            p2res = GetPlayerScore(p2point);
             score = p1res + "-" + p2res;
 
             return score;
@@ -54,8 +44,12 @@ namespace Tennis
             return IsEqualScoreline() && p1point > 2;
         }
 
-        public bool playerHasWinningAdvantage(){
+        public bool PlayerHasWinningAdvantage(){
             return !IsDeuce() && (p1point > 2 || p2point > 2);
+        }
+
+        public bool IsOngoingGame(){
+            return true;
         }
 
         public string GetPlayerGameAdvantage(){
@@ -74,7 +68,7 @@ namespace Tennis
             return result;
         }
 
-        public string LookUpScoreMap(int point)
+        public string GetPlayerScore(int point)
         {
             string result = string.Empty;
             string[] scoreMap = { "Love", "Fifteen", "Thirty", "Forty" };
@@ -84,7 +78,7 @@ namespace Tennis
             return result;
         }
 
-        public string showDrawnScore()
+        public string GetDrawnScore()
         {
             string score = string.Empty;
             switch(p1point)
