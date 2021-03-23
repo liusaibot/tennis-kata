@@ -19,15 +19,75 @@ namespace Tennis
 
         public string GetScore()
         {
-            var score = "";
-            bool isEqualScore = isEqualScoreline();
-            bool isDeuceScore = isDeuce();
+            var score = string.Empty;
+            bool isEqualScore = IsEqualScoreline();
+            bool isDeuceScore = IsDeuce();
+            bool hasWinningAdvantage = playerHasWinningAdvantage();
 
             if (isDeuceScore) return "Deuce";
 
             if (isEqualScore && !isDeuceScore)
             {
-                switch(p1point)
+                score = showDrawnScore();
+                return score;
+            }
+
+            if(hasWinningAdvantage) {
+                score = GetPlayerGameAdvantage();
+                return score;
+            }
+
+            p1res = LookUpScoreMap(p1point);
+            p2res = LookUpScoreMap(p2point);
+            score = p1res + "-" + p2res;
+
+            return score;
+        }
+
+        public bool IsEqualScoreline()
+        {
+            return p1point == p2point;
+        }
+
+        public bool IsDeuce()
+        {
+            return IsEqualScoreline() && p1point > 2;
+        }
+
+        public bool playerHasWinningAdvantage(){
+            return !IsDeuce() && (p1point > 2 || p2point > 2);
+        }
+
+        public string GetPlayerGameAdvantage(){
+            int advantage = p1point - p2point;
+            string result = string.Empty;
+            if(advantage == 1){
+                result = "Advantage Player1";
+            } else if(advantage == -1) {
+                result = "Advantage Player2";                
+            } else if(advantage >= 2){
+                result = "Win for player1";
+            } else {
+                result = "Win for player2";
+            }
+
+            return result;
+        }
+
+        public string LookUpScoreMap(int point)
+        {
+            string result = string.Empty;
+            string[] scoreMap = { "Love", "Fifteen", "Thirty", "Forty" };
+            if(point >= 0 && point < 3) {
+                result = scoreMap[point];
+            }
+            return result;
+        }
+
+        public string showDrawnScore()
+        {
+            string score = string.Empty;
+            switch(p1point)
                 {
                     case 0:
                         score = "Love-All";
@@ -43,87 +103,6 @@ namespace Tennis
                         break;
                 }
                 return score;
-            }            
-
-            if (p1point > 0 && p2point == 0)
-            {
-                if (p1point == 1)
-                    p1res = "Fifteen";
-                if (p1point == 2)
-                    p1res = "Thirty";
-                if (p1point == 3)
-                    p1res = "Forty";
-
-                p2res = "Love";
-                score = p1res + "-" + p2res;
-            }
-            if (p2point > 0 && p1point == 0)
-            {
-                if (p2point == 1)
-                    p2res = "Fifteen";
-                if (p2point == 2)
-                    p2res = "Thirty";
-                if (p2point == 3)
-                    p2res = "Forty";
-
-                p1res = "Love";
-                score = p1res + "-" + p2res;
-            }
-
-            if (p1point > p2point && p1point < 4)
-            {
-                if (p1point == 2)
-                    p1res = "Thirty";
-                if (p1point == 3)
-                    p1res = "Forty";
-                if (p2point == 1)
-                    p2res = "Fifteen";
-                if (p2point == 2)
-                    p2res = "Thirty";
-                score = p1res + "-" + p2res;
-            }
-            if (p2point > p1point && p2point < 4)
-            {
-                if (p2point == 2)
-                    p2res = "Thirty";
-                if (p2point == 3)
-                    p2res = "Forty";
-                if (p1point == 1)
-                    p1res = "Fifteen";
-                if (p1point == 2)
-                    p1res = "Thirty";
-                score = p1res + "-" + p2res;
-            }
-
-            if (p1point > p2point && p2point >= 3)
-            {
-                score = "Advantage player1";
-            }
-
-            if (p2point > p1point && p1point >= 3)
-            {
-                score = "Advantage player2";
-            }
-
-            if (p1point >= 4 && p2point >= 0 && (p1point - p2point) >= 2)
-            {
-                score = "Win for player1";
-            }
-            if (p2point >= 4 && p1point >= 0 && (p2point - p1point) >= 2)
-            {
-                score = "Win for player2";
-            }
-            return score;
-        }
-
-        public bool isEqualScoreline()
-        {
-            return p1Score == p2Score;
-        }
-
-        public bool isDeuce()
-        {
-            return isEqualScoreline() && p1point > 2;
         }
 
         public void SetP1Score(int number)
