@@ -19,19 +19,16 @@ namespace Tennis
 
         public string GetScore()
         {
-            string score = string.Empty;
-            
-            score = IsDeuce() == true ? "Deuce" : "";
-            
-            score = IsEqualScoreline() == true && !IsDeuce() ? GetDrawnScore() : ""; 
-            
-            score = PlayerHasWinningAdvantage() ? GetPlayerGameAdvantage() : "";
-            
-            p1res = GetPlayerScore(p1point);
-            p2res = GetPlayerScore(p2point);
-            score = p1res + "-" + p2res;
+            if(IsDeuce()) return "Deuce";
 
-            return score;
+            if(IsEqualScoreline() == true && !IsDeuce()) return GetDrawnScore();
+
+            if(PlayerHasWinningAdvantage()) return GetPlayerGameAdvantage();
+
+            if (IsOngoingGame()) return GetOngoingScore();
+
+            return string.Empty;
+            
         }
 
         public bool IsEqualScoreline()
@@ -44,24 +41,35 @@ namespace Tennis
             return IsEqualScoreline() && p1point > 2;
         }
 
-        public bool PlayerHasWinningAdvantage(){
-            return !IsDeuce() && (p1point > 2 || p2point > 2);
+        public bool PlayerHasWinningAdvantage()
+        {
+            return !IsDeuce() && (p1point > 3 || p2point > 3);
         }
 
-        public bool IsOngoingGame(){
-            return true;
+        public bool IsOngoingGame()
+        {
+            if ((p1point < 4 && p2point < 4) && (p1point + p2point < 6)) return true;
+            return false;
         }
 
-        public string GetPlayerGameAdvantage(){
+        public string GetPlayerGameAdvantage()
+        {
             int advantage = p1point - p2point;
             string result = string.Empty;
-            if(advantage == 1){
-                result = "Advantage Player1";
-            } else if(advantage == -1) {
-                result = "Advantage Player2";                
-            } else if(advantage >= 2){
+            if (advantage == 1)
+            {
+                result = "Advantage player1";
+            }
+            else if (advantage == -1)
+            {
+                result = "Advantage player2";
+            }
+            else if (advantage >= 2)
+            {
                 result = "Win for player1";
-            } else {
+            }
+            else
+            {
                 result = "Win for player2";
             }
 
@@ -72,7 +80,8 @@ namespace Tennis
         {
             string result = string.Empty;
             string[] scoreMap = { "Love", "Fifteen", "Thirty", "Forty" };
-            if(point >= 0 && point < 3) {
+            if (point >= 0 && point <= 3)
+            {
                 result = scoreMap[point];
             }
             return result;
@@ -81,22 +90,29 @@ namespace Tennis
         public string GetDrawnScore()
         {
             string score = string.Empty;
-            switch(p1point)
-                {
-                    case 0:
-                        score = "Love-All";
-                        break;
-                    case 1:
-                        score = "Fifteen-All";
-                        break;
-                    case 2:
-                        score = "Thirty-All";
-                        break;
-                    default:
-                        score = "Deuce";
-                        break;
-                }
-                return score;
+            switch (p1point)
+            {
+                case 0:
+                    score = "Love-All";
+                    break;
+                case 1:
+                    score = "Fifteen-All";
+                    break;
+                case 2:
+                    score = "Thirty-All";
+                    break;
+                default:
+                    score = "Deuce";
+                    break;
+            }
+            return score;
+        }
+
+        public string GetOngoingScore()
+        {
+            p1res = GetPlayerScore(p1point);
+            p2res = GetPlayerScore(p2point);
+            return p1res + "-" + p2res;
         }
 
         public void SetP1Score(int number)
